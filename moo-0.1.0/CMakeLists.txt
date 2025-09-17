@@ -83,6 +83,19 @@ else()
     endif()
 endif()
 
+# Lib command line parameters for lapack in configure might need some translation under apple
+if(APPLE)
+    set(MOO_LAPACK_LIB_CMDLINEPARAMS "")
+    foreach(MOO_LAPACK_LIB_element IN LISTS MOO_LAPACK_LIB)
+        # Convert full framework path to -framework -F parameters
+        string(REGEX REPLACE "(.*/)(.*)\.framework$" "-framework;\\2;-F\\1" MOO_LAPACK_LIB_element_translated ${MOO_LAPACK_LIB_element})
+        list(APPEND MOO_LAPACK_LIB_CMDLINEPARAMS "${MOO_LAPACK_LIB_element_translated}")
+    endforeach(MOO_LAPACK_LIB_element)
+    message(STATUS "LAPACK command line parameters for configure: ${MOO_LAPACK_LIB_CMDLINEPARAMS}")
+else()
+    set(MOO_LAPACK_LIB_CMDLINEPARAMS ${MOO_LAPACK_LIB})
+endif()
+
 # METIS
 if(MOO_METIS_LIB)
     message(STATUS "Using user-provided METIS: ${MOO_METIS_LIB}")
@@ -237,7 +250,7 @@ add_custom_command(
             ADD_CFLAGS=-O3\ ${MOO_NATIVE_BUILD_FLAGS_STRING}
             ADD_FCFLAGS=-O3\ ${MOO_NATIVE_BUILD_FLAGS_STRING}
             ADD_CXXFLAGS=-O3\ ${MOO_NATIVE_BUILD_FLAGS_STRING}
-            --with-lapack="${MOO_LAPACK_LIB}"
+            --with-lapack="${MOO_LAPACK_LIB_CMDLINEPARAMS}"
             --enable-shared=no
             --enable-static=yes
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/third-party/mumps
@@ -270,7 +283,7 @@ add_custom_command(
             ADD_CFLAGS=-O3\ ${MOO_NATIVE_BUILD_FLAGS_STRING}
             ADD_FCFLAGS=-O3\ ${MOO_NATIVE_BUILD_FLAGS_STRING}
             ADD_CXXFLAGS=-O3\ ${MOO_NATIVE_BUILD_FLAGS_STRING}
-            --with-lapack="${MOO_LAPACK_LIB}"
+            --with-lapack="${MOO_LAPACK_LIB_CMDLINEPARAMS}"
             --without-pardiso
             --with-mumps
             --with-mumps-lflags='-L${CMAKE_CURRENT_BINARY_DIR}/third-party/mumps/.libs'
