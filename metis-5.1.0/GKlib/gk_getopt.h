@@ -53,10 +53,11 @@ struct gk_option {
 
 #if !defined(__MINGW32__) /* do not define these for mingw32/mingw64 */
 /* Function prototypes */
-extern int gk_getopt(int __argc, char **__argv, char *__shortopts);
-extern int gk_getopt_long(int __argc, char **__argv, char *__shortopts,
+/* __argc/__argv are macros in the UCRT <stdlib.h>; use plain names. */
+extern int gk_getopt(int argc, char **argv, char *__shortopts);
+extern int gk_getopt_long(int argc, char **argv, char *__shortopts,
               struct gk_option *__longopts, int *__longind);
-extern int gk_getopt_long_only (int __argc, char **__argv,
+extern int gk_getopt_long_only (int argc, char **argv,
               char *__shortopts, struct gk_option *__longopts, int *__longind);
 #endif /* __MINGW64__ */
 

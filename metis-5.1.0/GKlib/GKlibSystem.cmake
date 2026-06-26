@@ -107,8 +107,11 @@ endif(HAVE_GETLINE)
 set(GKLIB_PATH "${PROJECT_SOURCE_DIR}/GKlib")
 
 # Custom check for TLS.
-if(MSVC)
+if(MSVC AND NOT CMAKE_C_COMPILER_ID MATCHES "Clang")
    set(GKlib_COPTIONS "${GKlib_COPTIONS} -D__thread=__declspec(thread)")
+elseif(MSVC)
+   # clang-cl understands the GNU __thread keyword natively; the parenthesised
+   # __declspec form is unquoted on the make command line and breaks /bin/sh.
 else()
   # This if checks if that value is cached or not.
   if("${HAVE_THREADLOCALSTORAGE}" MATCHES "^${HAVE_THREADLOCALSTORAGE}$")

@@ -700,7 +700,9 @@ if (ZMQ_BUILD_FRAMEWORK)
     COMMENT "Perf tools")
 endif ()
 
-if (MSVC)
+# Skip the MSVC precompiled header for clang-cl (its strict .pch validation
+# trips on the regenerated platform.hpp).
+if (MSVC AND NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # default for all sources is to use precompiled headers
     foreach(source ${sources})
         if (NOT ${source} STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}/src/precompiled.cpp")

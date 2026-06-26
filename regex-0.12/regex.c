@@ -27,7 +27,8 @@
 #if defined(_MSC_VER)
 #define HAVE_STRING_H 1
 #define REGEX_MALLOC  1
-#endif 
+#define STDC_HEADERS  1
+#endif
 
 #define _GNU_SOURCE
 
